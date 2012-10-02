@@ -48,7 +48,7 @@ if( preg_match_all($regex, $stripped, $matches, PREG_SET_ORDER) ) {
             }
         }
     }
-    
+
     ob_start();
     print_r($matches);
     $vars = ob_get_contents();
@@ -56,7 +56,6 @@ if( preg_match_all($regex, $stripped, $matches, PREG_SET_ORDER) ) {
     $res['vars'] = $vars;
 
     $res['text'] = preg_replace($regex, '<span class="hl">$1</span>', $stripped);
+
+    echo json_encode($res);
 }
-
-
-echo json_encode($res);
