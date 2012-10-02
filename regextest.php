@@ -41,7 +41,20 @@ $regex = '/('.str_replace("\n", '', $_POST['regex']).')/'.$_POST['modifiers'];
 
 
 if( preg_match_all($regex, $stripped, $matches, PREG_SET_ORDER) ) {
-    $res['vars'] = var_export($matches, 1);
+    foreach ($matches as $key => $match) {
+        foreach ($match as $j => $value) {
+            if(is_numeric($j)){
+                unset($matches[$key][$j]);
+            }
+        }
+    }
+    
+    ob_start();
+    print_r($matches);
+    $vars = ob_get_contents();
+    ob_end_clean();
+    $res['vars'] = $vars;
+
     $res['text'] = preg_replace($regex, '<span class="hl">$1</span>', $stripped);
 }
 
