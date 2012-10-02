@@ -1,6 +1,3 @@
-# Usage
+# About
 
-```
-php -S localhost:8000
-```
-
+Simple regular expression tester. Built for own purposes.
