@@ -9,7 +9,7 @@
         width: 100%;
     }
     input {
-        width: 600px;
+        width: 700px;
     }
     #modifiers {
         width: 100px;
@@ -17,7 +17,7 @@
     }
     textarea {
         display: block;
-        width: 600px;
+        width: 700px;
         height: 80px;
     }
     div, pre {
@@ -37,15 +37,26 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" ></script>
 <script type="text/javascript">
     $(function(){
-        var $vars = $('#vars');
-        var $text = $('#text');
-        $('input, textarea').keyup(function(){
+        var $vars = $('#vars'),
+            $text = $('#text'),
+            $regex = $('#regex'),
+            $url = $('#url'),
+            $modifiers = $('#modifiers');
+
+        $url.val(localStorage.getItem('url') || '');
+        $regex.val(localStorage.getItem('regex') || '');
+        $modifiers.val(localStorage.getItem('modifiers') || '');
+
+        var run = function(){
+            localStorage.regex = $regex.val();
+            localStorage.modifiers = $modifiers.val();
+            localStorage.url = $url.val();
             $.ajax({
                 url: 'regextest.php',
                 data: {
-                    url: $('#url').val(),
-                    regex: $('#regex').val(),
-                    modifiers: $('#modifiers').val()
+                    url: $url.val(),
+                    regex: $regex.val(),
+                    modifiers: $modifiers.val()
                 },
                 dataType: 'json',
                 type: 'post',
@@ -61,7 +72,13 @@
                     $text.html(res.responseText);
                 }
             });
-        });
+        };
+
+        $('input, textarea').keyup(run);
+
+        if($url.val() && $regex.val()){
+            run();
+        }
     });
 </script>
 
