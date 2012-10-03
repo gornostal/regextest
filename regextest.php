@@ -66,7 +66,7 @@ if(file_exists($file)) {
         echo json_encode($res);
         exit;
     }
-    $stripped = stripHTMLTag($content);
+    $stripped = stripHTMLTags($content);
     file_put_contents($file, $stripped);
 }
 $res['text'] = $stripped;
