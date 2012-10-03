@@ -1,5 +1,45 @@
 <?php
 
+function replaceSpecial( $text ){
+    // These mappings are from a unicode code point to zero or more other characters
+    $unicodeMappings = array(
+        '0080' => 'EUR',
+        '0085' => ' ',
+        '00B7' => ' ',
+        '0091' => '\'',  // Left single quote
+        '0092' => '\'',  // Right single quote
+        '0093' => '"',   // Left double quote
+        '0094' => '"',   // Right double quote
+        '0096' => '-',   // Some kind of dash/hyphen/minus
+        '0097' => '-',   // Some kind of dash/hyphen/minus
+        '0099' => ' ',   // Trademark Symbol
+        '00A0' => ' ',   // nbsp
+        '00A3' => 'GBP',
+        '00A5' => 'YEN',
+        '00A9' => ' ',   // Copyright Symbol
+        '00AE' => ' ',   // Registered Symbol
+        '00B7' => ' ',
+        '00C2' => ' ',
+        '20AC' => 'EUR',
+    );
+    foreach( $unicodeMappings as $unicode => $replacement ){
+        // A way to generate characters from their unicode code points 
+        // is to json decode a string of the form "\uXXXX" (quotes included)
+        $text = str_replace( json_decode( '"\u'.$unicode.'"' ), $replacement, $text );
+    }
+    return $text;
+}
+
+function stripHTMLTags(){
+    $text = utf8_encode( $text );
+    $text = preg_replace( '/<[^>]*>/', ' ', $text );
+    $text = html_entity_decode( $text, ENT_COMPAT, 'UTF-8' );
+    $text = replaceSpecial( $text );
+    $text = preg_replace( '/\s+/', ' ', $text );
+    return $text;
+}
+
+
 $res = array(
     'vars' => '',
     'text' => '',
@@ -10,7 +50,6 @@ if(!$_POST['url']){
     echo json_encode($res);
     exit;
 }
-require 'stringUtils.php';
 
 $dir = '/tmp/stripped-html';
 if( !file_exists($dir) ){
@@ -27,7 +66,7 @@ if(file_exists($file)) {
         echo json_encode($res);
         exit;
     }
-    $stripped = StrUtils::stripHTMLTag($content);
+    $stripped = stripHTMLTag($content);
     file_put_contents($file, $stripped);
 }
 $res['text'] = $stripped;
