@@ -30,7 +30,7 @@ function replaceSpecial( $text ){
     return $text;
 }
 
-function stripHTMLTags(){
+function stripHTMLTags( $text ){
     $text = utf8_encode( $text );
     $text = preg_replace( '/<[^>]*>/', ' ', $text );
     $text = html_entity_decode( $text, ENT_COMPAT, 'UTF-8' );
